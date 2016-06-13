@@ -20,6 +20,8 @@ data Doggies a =
 --8. doge -> DogueDeBordeaux doge (:t DogueDeBordeaux)
 --9. DogueDeBordeaux [Char] (:t DogueDeBordeaux "doggie!")
 
+
+
 data Price =
   Price Integer deriving (Eq, Show)
 
@@ -77,6 +79,16 @@ data Vehicle' = Car' Manufacturer Price
 isPlane' :: Vehicle' -> Bool
 isPlane' (Plane' _ _) = True
 isPlane' _            = False
+
+
+
+--Exercises: Cardinality
+--1. 1
+--2. 3
+--3. 2 ^ 16 ((fromIntegral (maxBound :: Int16)) - (fromIntegral (minBound :: Int16)) + 1)
+--  had to import Data.Int for Int16
+--4. Int is a 64 bit integer (2^64 inhabitants), while Integer is unbounded (infinite inhabitants)
+--5. Number of bits.  My friends weren't impressed. :(
 
 main :: IO ()
 main = do
