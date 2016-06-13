@@ -90,6 +90,16 @@ isPlane' _            = False
 --4. Int is a 64 bit integer (2^64 inhabitants), while Integer is unbounded (infinite inhabitants)
 --5. Number of bits.  My friends weren't impressed. :(
 
+
+data Example = MakeExample deriving Show
+
+--Exercises: For Example
+--1. Example (:t MakeExample)
+--   :t Example complains that Example is not a data constructor
+--2. Show (:i Example)
+--3. a -> MyExample a (:t MakeMyExample)
+data MyExample a = MakeMyExample a deriving Show
+
 main :: IO ()
 main = do
   putStrLn "hello world"
