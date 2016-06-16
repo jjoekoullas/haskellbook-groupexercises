@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module Main where
 
 data PugType = PugData
@@ -99,6 +101,28 @@ data Example = MakeExample deriving Show
 --2. Show (:i Example)
 --3. a -> MyExample a (:t MakeMyExample)
 data MyExample a = MakeMyExample a deriving Show
+
+
+--Exercises: Logic Goats
+--1.
+class TooMany a where
+  tooMany :: a -> Bool
+
+instance TooMany Int where
+  tooMany n = n > 42
+
+instance TooMany (Int, String) where
+  tooMany (n, _) = tooMany n 
+
+--2.
+instance TooMany (Int, Int) where
+  tooMany (x, y) = tooMany $ x + y
+
+
+
+--Exercises: Pity the Bool
+--1. 2 + 2 = 4
+--2. 256 + 2 = 258
 
 main :: IO ()
 main = do
