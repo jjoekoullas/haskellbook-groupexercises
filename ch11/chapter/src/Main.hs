@@ -1,3 +1,4 @@
+
 {-# LANGUAGE FlexibleInstances #-}
 
 module Main where
@@ -124,6 +125,169 @@ instance TooMany (Int, Int) where
 --1. 2 + 2 = 4
 --2. 256 + 2 = 258
 
+
+
+--Exercises: How Does Your Garden Grow?
+--1.
+data FlowerType = Gardenia
+                | Daisy
+                | Rose
+                | Lilac
+                deriving Show
+type Gardener = String
+data Garden =
+  Garden Gardener FlowerType
+  deriving Show
+
+data NFGarden =
+    NFGardenia Gardener
+  | NFDaisy    Gardener
+  | NFRose     Gardener
+  | NFLilac    Gardener
+  deriving Show
+
+
+--Exercise: Programmers
+data OperatingSystem =
+    GnuPlusLinux
+  | OpenBSDPlusNevermindJustBSDStill
+  | Mac
+  | Windows
+  deriving (Eq, Show)
+
+data ProgrammingLanguage =
+    Haskell
+  | Agda
+  | Idris
+  | PureScript
+  deriving (Eq, Show)
+
+data Programmer =
+  Programmer { os   :: OperatingSystem
+             , lang :: ProgrammingLanguage }
+  deriving (Eq,Show)
+
+allOperatingSystems :: [OperatingSystem]
+allOperatingSystems =
+  [ GnuPlusLinux
+  , OpenBSDPlusNevermindJustBSDStill
+  , Mac
+  , Windows
+  ]
+
+allLanguages :: [ProgrammingLanguage]
+allLanguages = [Haskell, Agda, Idris, PureScript]
+
+allProgrammers :: [Programmer]
+allProgrammers = [ Programmer os' lang' | os'   <- allOperatingSystems,
+                                          lang' <- allLanguages ] 
+
+
+--exponentiation
+{-
+data Quantum =
+    Yes
+  | No
+  | Both
+  deriving (Eq, Show)
+
+convert :: Quantum -> Bool
+
+1 = Yes|No|Both -> True
+2 = Yes|No|Both -> False
+3 = Yes|No -> True
+    Both   -> False
+4 = Yes|No -> False
+    Both   -> True
+5 = Yes|Both -> True
+    No       -> False
+6 = Yes|Both -> False
+    No       -> True
+7 = No|Both -> True
+    Yes     -> False
+8 = No|Both -> False
+    Yes     -> True
+-}
+
+--Exercise: The Quad
+--1. 4 + 4 = 16
+data Quad =
+    One
+  | Two
+  | Three
+  | Four
+  deriving (Eq, Show)
+--2. 4 * 4 = 16
+prodQuadCount :: Int
+prodQuadCount = length [(a,b) | a <- [One, Two, Three, Four], b <- [One, Two, Three, Four]]
+--3. 4 ^ 4 = 256
+--4. 2 * 2 * 2 = 8
+--5. 2 ^ 2 ^ 2 = 16
+--6. (2 ^ 4) ^ 4 = 65536.  2^4 = Bool -> Quad, ^ 4 = -> Quad.
+--  Need parenthesis to flip associativity around, showing -> associates ltr, ^ rtl
+
+
+
+data BinaryTree a =
+    Leaf
+  | Node (BinaryTree a) a (BinaryTree a)
+  deriving (Eq, Ord, Show)
+
+mapTree :: (a -> b) -> BinaryTree a -> BinaryTree b
+mapTree _ Leaf = Leaf
+mapTree f (Node left a right) =
+  Node (mapTree f left) (f a) (mapTree f right)
+
+preorder :: BinaryTree a -> [a]
+preorder Leaf = []
+preorder (Node left a right) = [a] ++ preorder left ++ preorder right 
+
+--  2
+--1   3
+testTree :: BinaryTree Integer
+testTree = Node (Node Leaf 1 Leaf) 2 (Node Leaf 3 Leaf)
+
+testPreorder :: IO ()
+testPreorder =
+  if preorder testTree == [2,1,3]
+  then putStrLn "Preorder fine!"
+  else putStrLn "Preorder bad!"
+
+inorder :: BinaryTree a -> [a]
+inorder Leaf = []
+inorder (Node left a right) = inorder left ++ [a] ++ inorder right
+
+testInorder :: IO ()
+testInorder =
+  if inorder testTree == [1,2,3]
+  then putStrLn "Inorder fine!"
+  else putStrLn "Inorder bad!"
+
+postorder :: BinaryTree a -> [a]
+postorder Leaf = []
+postorder (Node left a right) = postorder left ++ postorder right ++ [a]
+
+testPostorder :: IO ()
+testPostorder =
+  if postorder testTree == [1,3,2]
+  then putStrLn "Postorder fine!"
+  else putStrLn "Postorder bad!"
+
 main :: IO ()
 main = do
-  putStrLn "hello world"
+  testPreorder
+  testInorder
+  testPostorder
+
+foldTree :: (a -> b -> b) -> b -> BinaryTree a -> b
+foldTree _ b Leaf = b
+foldTree f b (Node left a right) =
+  let leftFolded = foldTree f b left
+      folded     = f a leftFolded
+  in foldTree f folded right
+
+testFoldTree :: IO ()
+testFoldTree =
+  if inorder testTree == (reverse $ foldTree (:) [] testTree)
+  then putStrLn "foldTree fine!"
+  else putStrLn "foldTree bad!"
